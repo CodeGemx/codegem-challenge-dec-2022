@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {Card, CardBody, CardFooter, CardHeader, CardInfo, CardSection} from "./components/card";
+import React, { useEffect, useState } from 'react';
+import { Card, CardBody, CardFooter, CardHeader, CardInfo, CardSection } from "./components/card";
 import ApiService from "./services/api";
 import styled from '@emotion/styled';
-import {BoxChip} from "./components/box-chip";
-import {Colors} from "./utils/colors";
-import {compareDesc, format, parseISO} from "date-fns";
-import {FeedbackCard} from "./components/feedback-card";
-import {Button, ButtonContainer} from "./components/button";
-import {FEEDBACK_FORM, MY_DIARY} from "./App";
+import { BoxChip } from "./components/box-chip";
+import { Colors } from "./utils/colors";
+import { compareDesc, format, parseISO } from "date-fns";
+import { FeedbackCard } from "./components/feedback-card";
+import { CalendarCard } from "./components/calendar";
+import { Button, ButtonContainer } from "./components/button";
+import { FEEDBACK_FORM, MY_DIARY } from "./App";
 
 const CenteredDiv = styled.div`
   text-align: center;
@@ -44,7 +45,7 @@ const DateSection = styled(CenteredDiv)`
     margin-top: 20px;
 `;
 
-export const MyDiary = ({onPageChange}) => {
+export const MyDiary = ({ onPageChange }) => {
     let [feedbackList, setFeedbackList] = useState([]);
     let [checkInStatus, setCheckInStatus] = useState({});
     const [isFeedbackListLoaded, setIsFeedbackListLoaded] = useState(false);
@@ -58,12 +59,12 @@ export const MyDiary = ({onPageChange}) => {
                     if (isMounted) {
                         setFeedbackList(
                             res.data
-                                .map(f => ({...f, created_at: parseISO(f.created_at)}))
+                                .map(f => ({ ...f, created_at: parseISO(f.created_at) }))
                                 .sort((a, b) => compareDesc(a.created_at, b.created_at))
                                 .map(f => ({
-                                        ...f,
-                                        date: format(f.created_at, 'eeee MMM d')
-                                    })
+                                    ...f,
+                                    date: format(f.created_at, 'eeee MMM d')
+                                })
                                 ));
                         setIsFeedbackListLoaded(true);
                     }
@@ -115,7 +116,7 @@ export const MyDiary = ({onPageChange}) => {
 
     return (<Card>
         <CardHeader dismissible>
-         My Log
+            My Log
         </CardHeader>
         <CardBody>
             {
@@ -133,18 +134,21 @@ export const MyDiary = ({onPageChange}) => {
                         </CenteredSubHeading>
                     </CardInfo>
                     <BoxChipsContainer>
-                        <BoxChip title='Daily Checkin' text='Finished!' color={Colors.secondary2}/>
+                        <BoxChip title='Daily Checkin' text='Finished!' color={Colors.secondary2} />
                         <BoxChip
                             title='Current Streak'
                             text={`${checkInStatus.currentStreak} Days 🔥`}
-                            color={Colors.primary}/>
+                            color={Colors.primary} />
                         <BoxChip
                             title='Longest Streak'
                             text={`${checkInStatus.longestStreak} Days`}
-                            color={Colors.purple2}/>
+                            color={Colors.purple2} />
                     </BoxChipsContainer>
                 </BottomBorderedCardSection>
             }
+            <CardSection>
+                <CalendarCard></CalendarCard>
+            </CardSection>
             <CardSection>
                 {Array.from(feedbackKeyedByDate.entries()).map(([date, feedbackItems]) => <div key={date}>
                     <DateSection>
